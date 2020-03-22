@@ -41,13 +41,20 @@ We used 2x* *2080*, 8x* *1080* and GCP credits.
 - Ilya Dobrynin: [Kaggle](https://www.kaggle.com/ilyadobrynin)
 - Ivan Panshin: [Kaggle](https://www.kaggle.com/ivanpan)
 
-## How the winners models differed:
+## How the winner's decision was different from ours:
 [1st place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135984):
  * All models classify against the 14784 (168 * 11 * 8) classes
+ * No cutmix/mixup, just cutout
  * Different training stages:
    * Effnet-B7 for classify to "Seen" or "Unseen" images;
    * Effnet-B7 for classify 1295 classes included in the training data;
    * Classifier for images synthesized from ttf files and generator that converts handwritten characters into the desired synthesized data-like image
    
-[2nd place]():
+[2nd place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135966):
+* Switch from predicting R,C,V to predicting individual graphemes
+* [Fmix](https://arxiv.org/abs/2002.12047) worked clearly better than cutmix, and also the resulting images looked way more natural to us due to the way the cut areas are picked
+* Postprocessing (read the post)
+
+[3rd place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135982):
+* Сlassifier to "Seen" or "Unseen" images
 * 
