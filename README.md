@@ -6,14 +6,14 @@ Our team ranked 254th place (TOP 13%) in the 2-stage competition [Bengali.AI Han
 * `se_resnext50_32x4d_train_by_folds` - folder with full simple pipeline:
   * how I prepared folds
   * what utils did I use
-  * how I train and finetuned the model **(SE_ResNext50_32x4d)**
+  * how I trained and finetuned the model **(SE_ResNext50_32x4d)**
 * `models`:
   * `se_resnext50_32x4d_0fold_example.ipynb` - Best single model by CV. Example with training first fold
   * `densenet121_128x128.ipynb` - Best single model by LB. We could take 72nd place (TOP 4%) with this model, but we didn't choose this as the final one.
   * `effnetb3_imgsize128_1channel-fp32.ipynb` - second single model by CV
-* `preprocessing_to_npy.ipynb` - script with how to save `.parquet` images in `.npy` (and resized it)
+* `preprocessing_to_npy.ipynb` - script with how to save `.parquet` images into `.npy` (and resized it)
 
-## Solution description
+## Solution description:
 
 ### Data
 The task proposed in this competition is recognition of handwritten Bengali letters. In contrast to similar competitions such as [mnist digit recognition](https://www.kaggle.com/c/digit-recognizer) or the recent [Kannada MNIST](https://www.kaggle.com/c/Kannada-MNIST), Bengali alphabet is quite complex and may include ~13,000 different grapheme variations. Fortunately, each grapheme can be decomposed into 3 parts: grapheme_root, vowel_diacritic, and consonant_diacritic (168, 11, and 7 independent classes, respectively). Therefore, the task of grapheme recognition is significantly simplified in comparison with 13k-way classification. Though, additional consideration may be required for this multitask classification, like checking if 3 independent models, or a single model one head, or a single model with 3 heads (our approach) works the best.
@@ -26,10 +26,10 @@ Good kernel with a similar approach right [here](https://www.kaggle.com/iafoss/i
 
 ### Augmentations
 * Cutmix / Mixup - showed excellent metric growth.
-* From [Albumentations](https://github.com/albu/albumentations) library: ShiftScaleRotate, IAAPerspective and IAAPiecewiseAffine worked best for us.
+* From [Albumentations](https://github.com/albu/albumentations) library: ShiftScaleRotate, IAAPerspective and IAAPiecewiseAffine worked best for me.
 
 ### Training
-All models were trained using FastAi and Pytorch libraries. Adam as optimizer with ReduceLROnPlateau or OneCycle policy gave us the best results.
+All models in this repository were trained using FastAi and Pytorch libraries. Adam as optimizer with ReduceLROnPlateau or OneCycle policy gave me the best results.
 
 ### Hardware
 We used 2x* *2080*, 8x* *1080* and GCP credits.
@@ -40,3 +40,14 @@ We used 2x* *2080*, 8x* *1080* and GCP credits.
 - Vlad A: [Kaggle](https://www.kaggle.com/valyukov), [GitHub](https://github.com/valyukov)
 - Ilya Dobrynin: [Kaggle](https://www.kaggle.com/ilyadobrynin)
 - Ivan Panshin: [Kaggle](https://www.kaggle.com/ivanpan)
+
+## How the winners models differed:
+[1st place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135984):
+ * All models classify against the 14784 (168 * 11 * 8) classes
+ * Different training stages:
+   * Effnet-B7 for classify to "Seen" or "Unseen" images;
+   * Effnet-B7 for classify 1295 classes included in the training data;
+   * Classifier for images synthesized from ttf files and generator that converts handwritten characters into the desired synthesized data-like image
+   
+[2nd place]():
+* 
