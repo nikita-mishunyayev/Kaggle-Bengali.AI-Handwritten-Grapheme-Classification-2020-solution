@@ -19,7 +19,9 @@ Our team ranked 254th place (TOP 13%) in the 2-stage competition [Bengali.AI Han
 The task proposed in this competition is recognition of handwritten Bengali letters. In contrast to similar competitions such as [mnist digit recognition](https://www.kaggle.com/c/digit-recognizer) or the recent [Kannada MNIST](https://www.kaggle.com/c/Kannada-MNIST), Bengali alphabet is quite complex and may include ~13,000 different grapheme variations. Fortunately, each grapheme can be decomposed into 3 parts: grapheme_root, vowel_diacritic, and consonant_diacritic (168, 11, and 7 independent classes, respectively). Therefore, the task of grapheme recognition is significantly simplified in comparison with 13k-way classification. Though, additional consideration may be required for this multitask classification, like checking if 3 independent models, or a single model one head, or a single model with 3 heads (our approach) works the best.
 
 ### Models and huge shake-up
-We tried many preprocessing and augmentations strategies in this competition, but we achieved our two best single results by two models: `se_resnext50_32x4d` and `effnetb3` with cutmix/mixup approach and some augmentations. ***These were the best models on CV, but in the private test part there were a lot of new grapheme combinations that we were not ready for. This was the main reason for the huge shake-up for most of the participants.*** According to the rules, in the Stage 1 submission we uploaded all our models. And then these models will be used to generate the final submissions for scoring in Stage 2. Public leaderboard in Stage 1 is calculated with approximately ~46% of the test data.
+We tried many preprocessing and augmentations strategies in this competition, but we achieved our two best single results by two models: `se_resnext50_32x4d` and `effnetb3` with cutmix/mixup approach and some augmentations. ***These were the best models on CV, but in the private test part there were a lot of new grapheme combinations that we were not ready for. This was the main reason for the huge shake-up for most of the participants.*** There's a [great illustration](https://www.kaggle.com/c/bengaliai-cv19/discussion/136054) of what we've all been watching.
+
+According to the rules, in the Stage 1 submission we uploaded all our models. And then these models will be used to generate the final submissions for scoring in Stage 2. Public leaderboard in Stage 1 is calculated with approximately ~46% of the test data.
 
 For preprocessing we use invert and resize images with (or without) cropping keeping only the characters.
 Good kernel with a similar approach right [here](https://www.kaggle.com/iafoss/image-preprocessing-128x128).
@@ -42,7 +44,7 @@ We used 2x* *2080*, 8x* *1080* and GCP credits.
 - Ivan Panshin: [Kaggle](https://www.kaggle.com/ivanpan)
 
 ## How the winner's decision was different from ours:
-[1st place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135984):
+[**1st place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135984):
  * All models classify against the 14784 (168 * 11 * 8) classes
  * No cutmix/mixup, just cutout
  * Different training stages:
@@ -50,11 +52,33 @@ We used 2x* *2080*, 8x* *1080* and GCP credits.
    * Effnet-B7 for classify 1295 classes included in the training data;
    * Classifier for images synthesized from ttf files and generator that converts handwritten characters into the desired synthesized data-like image
    
-[2nd place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135966):
+[**2nd place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135966):
 * Switch from predicting R,C,V to predicting individual graphemes
 * [Fmix](https://arxiv.org/abs/2002.12047) worked clearly better than cutmix, and also the resulting images looked way more natural to us due to the way the cut areas are picked
 * Postprocessing (read the post)
 
-[3rd place](https://www.kaggle.com/c/bengaliai-cv19/discussion/135982):
+[**3rd place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135982):
+* Replace softmax with [pc-softmax](https://arxiv.org/abs/1911.10688) and use negative log likelihood as loss function
 * Сlassifier to "Seen" or "Unseen" images
-* 
+* Arcface
+ * use cosine similarity between train and test embedding feature;
+ * threshold: smallest cosine similarity between train and validation embedding feature
+
+[**5th place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/136129):
+* 4 cycle cosine annealing with augmentation increase
+* Recoded the cons classes into a multilabel classification problem (read the post)
+* Losses:
+ * root/vowel loss: CrossEntropy
+ * consonant loss: Multi label Binary Crossentropy
+ * grapheme loss: ArcCos + CrossEntropy
+ * total loss = root loss + consonant loss + vowel loss + grapheme loss
+ 
+[**7th place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135960):
+* Finetuned previous models with the synthetic data (graphemes are actually encoded as sequence of unicode characters)
+
+[**10th place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/136815):
+* Single model in 4 days
+* Instead of simply applying Global Average Pooling to feature map and using its result as common input of each component's head, He used [sSE Block](https://arxiv.org/abs/1803.02579) and Global Average Pooling for each component. Examples: [post+kernel](https://www.kaggle.com/c/bengaliai-cv19/discussion/137552) and [comment here](https://www.kaggle.com/c/bengaliai-cv19/discussion/136815#781819)
+* No cutmix / mixup, just hard augmentations with RandomErasing
+
+Other Top Solutions you can find [here](https://www.kaggle.com/c/bengaliai-cv19/discussion/136769).
