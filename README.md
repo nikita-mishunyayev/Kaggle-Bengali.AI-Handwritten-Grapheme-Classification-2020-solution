@@ -60,18 +60,18 @@ We used 2x* *2080*, 8x* *1080* and GCP credits.
 [**3rd place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135982):
 * Replace softmax with [pc-softmax](https://arxiv.org/abs/1911.10688) and use negative log likelihood as loss function
 * Сlassifier to "Seen" or "Unseen" images
-* Arcface
- * use cosine similarity between train and test embedding feature;
- * threshold: smallest cosine similarity between train and validation embedding feature
+* Arcface approach:
+  * use cosine similarity between train and test embedding feature;
+  * threshold: smallest cosine similarity between train and validation embedding feature
 
 [**5th place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/136129):
 * 4 cycle cosine annealing with augmentation increase
 * Recoded the cons classes into a multilabel classification problem (read the post)
 * Losses:
- * root/vowel loss: CrossEntropy
- * consonant loss: Multi label Binary Crossentropy
- * grapheme loss: ArcCos + CrossEntropy
- * total loss = root loss + consonant loss + vowel loss + grapheme loss
+  * root/vowel loss: CrossEntropy
+  * consonant loss: Multi label Binary Crossentropy
+  * grapheme loss: ArcCos + CrossEntropy
+  * total loss = root loss + consonant loss + vowel loss + grapheme loss
  
 [**7th place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135960):
 * Finetuned previous models with the synthetic data (graphemes are actually encoded as sequence of unicode characters)
@@ -80,5 +80,13 @@ We used 2x* *2080*, 8x* *1080* and GCP credits.
 * Single model in 4 days
 * Instead of simply applying Global Average Pooling to feature map and using its result as common input of each component's head, He used [sSE Block](https://arxiv.org/abs/1803.02579) and Global Average Pooling for each component. Examples: [post+kernel](https://www.kaggle.com/c/bengaliai-cv19/discussion/137552) and [comment here](https://www.kaggle.com/c/bengaliai-cv19/discussion/136815#781819)
 * No cutmix / mixup, just hard augmentations with RandomErasing
+
+[**12nd place**](https://www.kaggle.com/c/bengaliai-cv19/discussion/135998):
+* It's a simple enough solution with blending different architectures, augmentations and parameters
+* The approach is similar to ours, but a more accurate selection of parameters allowed them not to ovetfit as us, good job!
+
+[**13th**](https://www.kaggle.com/c/bengaliai-cv19/discussion/136116) and [**14th**](https://www.kaggle.com/c/bengaliai-cv19/discussion/136021) places:
+* Hacking Macro Recall as postprocessing
+* CAM CutMix (2-stage training)
 
 Other Top Solutions you can find [here](https://www.kaggle.com/c/bengaliai-cv19/discussion/136769).
